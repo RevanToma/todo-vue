@@ -1,10 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { schema } from "./graphql/schema";
-import { createYoga } from "graphql-yoga";
-import { createServer } from "http";
+
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolver";
 import { ApolloServer } from "apollo-server-express";
+import cors from "cors";
 
 const express = require("express");
 
@@ -16,19 +15,29 @@ const startServer = async () => {
     // Initialize Express
     const app = express();
     app.use(express.json());
+    app.use(
+      cors({
+        origin: [process.env.CLIENT_API!, "https://studio.apollographql.com"],
+        credentials: true,
+      })
+    );
+
+    interface Context {
+      prisma: PrismaClient;
+    }
 
     // Create Apollo Server instance
     const server = new ApolloServer({
       typeDefs,
       resolvers,
-      context: () => ({ prisma }),
+      context: (): Context => ({ prisma }),
     });
 
     // Start Apollo Server
     await server.start();
 
     // Apply Apollo Server as middleware to the Express app
-    server.applyMiddleware({ app });
+    server.applyMiddleware({ app, cors: false });
 
     // Start listening for HTTP requests on the Express app
     const PORT = process.env.PORT || 4000;

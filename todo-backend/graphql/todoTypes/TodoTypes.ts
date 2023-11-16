@@ -9,10 +9,12 @@ const TodoTypes = gql`
 
   type Mutation {
     addTodo(title: String!): Todo
+    removeTodo(id: ID!): Boolean
+    updateTodo(id: ID!, title: String, completed: Boolean): Todo
   }
 
   type Query {
-    hello: String
+    getTodos: [Todo!]!
   }
 `;
 

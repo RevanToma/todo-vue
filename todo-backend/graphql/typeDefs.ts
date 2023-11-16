@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-express";
-import TodoTypes from "./todoTypes/todoTypes";
+import TodoTypes from "./todoTypes/TodoTypes";
 
 // Base type definitions
 const Base = gql`
