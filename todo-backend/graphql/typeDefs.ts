@@ -1,7 +1,6 @@
 import { gql } from "apollo-server-express";
 import TodoTypes from "./todoTypes/TodoTypes";
 
-// Base type definitions
 const Base = gql`
   type Query {
     _empty: String

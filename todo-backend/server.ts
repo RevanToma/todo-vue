@@ -9,10 +9,10 @@ const express = require("express");
 
 const startServer = async () => {
   try {
-    // Initialize Prisma Client
+    //  Prisma Client
     const prisma = new PrismaClient();
 
-    // Initialize Express
+    //  Express
     const app = express();
     app.use(express.json());
     app.use(
@@ -26,7 +26,7 @@ const startServer = async () => {
       prisma: PrismaClient;
     }
 
-    // Create Apollo Server instance
+    //  Apollo Server
     const server = new ApolloServer({
       typeDefs,
       resolvers,
@@ -36,10 +36,10 @@ const startServer = async () => {
     // Start Apollo Server
     await server.start();
 
-    // Apply Apollo Server as middleware to the Express app
+    //  Apollo server as middleware to the express app
     server.applyMiddleware({ app, cors: false });
 
-    // Start listening for HTTP requests on the Express app
+    // Start listening for HTTP requests on the express app
     const PORT = process.env.PORT || 4000;
     app.listen(PORT, () => {
       console.log(
