@@ -1,32 +1,76 @@
 <template>
   <Base-title title="My Todos" />
+  <form @submit.prevent="addNewTodo">
+    <input type="text" v-model="newTodoTitle" placeholder="Add new todo" />
+    <select v-model="newTodoType">
+      <option value="training" class="todo-type-training">Training</option>
+      <option value="work" class="todo-type-work">Work</option>
+      <option value="personal" class="todo-type-personal">Personal</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
   <div v-if="loading">Loading...</div>
   <div v-if="error">An error occurred: {{ error.message }}</div>
   <div v-else-if="todos">
     <ul>
-      <li v-for="todo in todos" :key="todo.id">{{ todo.title }}</li>
+      <TodoItem
+        v-for="todo in todos"
+        :key="todo.id"
+        :todo="todo"
+        @update:todo="handleUpdateTodo"
+        @delete:todo="handleDeleteTodo"
+        @toggle:completion="handleToggleCompletion"
+      />
     </ul>
   </div>
   <div v-else>No data available</div>
 </template>
 
-<script setup>
-import { useQuery } from '@vue/apollo-composable'
-import { ref, watchEffect } from 'vue'
-import gql from 'graphql-tag'
+<script setup lang="ts">
+import { useQuery, useMutation } from '@vue/apollo-composable'
+import { ref, watchEffect, type Ref } from 'vue'
+import { GET_TODOS, REMOVE_TODO, UPDATE_TODO, ADD_TODO } from './../../mutations'
+import { type Todo } from './../../types'
+import TodoItem from './TodoItem.vue'
+const { mutate: removeTodo } = useMutation(REMOVE_TODO, {
+  refetchQueries: [{ query: GET_TODOS }]
+})
 
-const GET_TODOS = gql`
-  query getTodos {
-    getTodos {
-      id
-      title
-      completed
+const { mutate: updateTodo } = useMutation(UPDATE_TODO)
+
+const { mutate: addTodo } = useMutation(ADD_TODO)
+
+const handleUpdateTodo = async (updatedTodo: Todo) => {
+  await updateTodo({ ...updatedTodo })
+}
+
+const handleDeleteTodo = async (id: string) => {
+  await removeTodo({ id })
+}
+const handleToggleCompletion = async (updatedTodo: Todo) => {
+  await updateTodo({ ...updatedTodo })
+}
+const addNewTodo = async () => {
+  if (newTodoTitle.value.trim()) {
+    const response = await addTodo({
+      title: newTodoTitle.value,
+      todoType: newTodoType.value
+    })
+
+    if (response?.data) {
+      todos.value = [...todos.value!, response.data.addTodo]
     }
+    newTodoTitle.value = ''
+    newTodoType.value = 'training'
   }
-`
+}
 
 const { result, loading, error } = useQuery(GET_TODOS)
-const todos = ref(null)
+const todos: Ref<Todo[] | null> = ref(null)
+
+const newTodoTitle = ref('')
+
+const newTodoType = ref('training')
 
 watchEffect(() => {
   if (result.value) {
@@ -34,3 +78,51 @@ watchEffect(() => {
   }
 })
 </script>
+
+<style>
+li {
+  color: black;
+  border-radius: 1rem;
+  list-style: none;
+}
+ul {
+  padding: 0;
+}
+.liContent {
+  display: flex;
+  gap: 10;
+}
+.todo-type {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+}
+span {
+  width: 10em;
+}
+form {
+  display: flex;
+  gap: 1rem;
+}
+input {
+  margin-right: 1rem;
+  padding: 0.3rem;
+  border-radius: 0.5rem;
+  border: none;
+}
+.todo-type-training {
+  background-color: #f0ad4e;
+}
+.todo-type-work {
+  background-color: #5bc0de;
+}
+.todo-type-personal {
+  background-color: #5cb85c;
+}
+.completedTask {
+  text-decoration: line-through;
+}
+</style>
