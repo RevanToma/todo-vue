@@ -1,6 +1,6 @@
 # Full-Stack School Project
 
-This project is a full-stack application developed as part of a school assignment. It features a frontend built with Vue.js and TypeScript, and a backend leveraging Prisma, GraphQL, and PostgreSQL.
+This project is a small full-stack application developed as part of a school assignment. It features a frontend built with Vue.js and TypeScript, and a backend leveraging Prisma, GraphQL, and PostgreSQL.
 
 ### Frontend
 
