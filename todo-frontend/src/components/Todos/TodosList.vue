@@ -43,6 +43,10 @@ const { mutate: updateTodo } = useMutation(UPDATE_TODO)
 
 const { mutate: addTodo } = useMutation(ADD_TODO)
 
+const todos: Ref<Todo[] | null> = ref(null)
+const newTodoTitle = ref('')
+const newTodoType = ref('training')
+
 const handleUpdateTodo = async (updatedTodo: Todo) => {
   await updateTodo({ ...updatedTodo })
 }
@@ -69,9 +73,6 @@ const addNewTodo = async () => {
 }
 
 const { result, loading, error } = useQuery(GET_TODOS)
-const todos: Ref<Todo[] | null> = ref(null)
-const newTodoTitle = ref('')
-const newTodoType = ref('training')
 
 const selectClass = computed(() => `todo-type-${newTodoType.value}`)
 
