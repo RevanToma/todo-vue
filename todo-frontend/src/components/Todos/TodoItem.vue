@@ -70,6 +70,11 @@ const toggleCompletion = () => {
 span {
   width: 10em;
 }
+li {
+  color: black;
+  border-radius: 1rem;
+  list-style: none;
+}
 
 .completedTask {
   text-decoration: line-through;
