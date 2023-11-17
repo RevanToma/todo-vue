@@ -5,5 +5,7 @@ export interface TodoUpdateArgs {
 }
 
 export interface TodoIdArgs {
+  title: string;
   id: string;
+  todoType: string;
 }

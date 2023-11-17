@@ -28,13 +28,14 @@ const TodoResolvers = {
     },
     addTodo: async (
       _parent: any,
-      args: any,
+      args: TodoIdArgs,
       context: { prisma: PrismaClient }
     ): Promise<Todo> => {
       return await context.prisma.todo.create({
         data: {
           title: args.title,
           completed: false,
+          todoType: args.todoType,
         },
       });
     },
