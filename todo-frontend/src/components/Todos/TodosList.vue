@@ -83,7 +83,7 @@ watchEffect(() => {
 })
 </script>
 
-<style>
+<style scoped>
 .container {
   box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
   margin: 1rem 0;

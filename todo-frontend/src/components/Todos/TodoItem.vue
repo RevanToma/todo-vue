@@ -1,6 +1,6 @@
 <template>
   <li :class="`todo-type-${todo.todoType}`">
-    <div v-if="isEditing">
+    <div class="todo-type" v-if="isEditing">
       <input type="text" v-model="editableTitle" />
       <button @click="saveEdit">Save</button>
       <button @click="cancelEdit">Cancel</button>
